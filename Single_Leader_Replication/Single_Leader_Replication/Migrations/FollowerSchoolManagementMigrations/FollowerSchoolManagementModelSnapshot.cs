@@ -8,10 +8,10 @@ using Single_Leader_Replication.Configurations;
 
 #nullable disable
 
-namespace Single_Leader_Replication.Migrations.LeaderSchoolManagementMigrations
+namespace Single_Leader_Replication.Migrations.FollowerSchoolManagementMigrations
 {
-    [DbContext(typeof(LeaderSchoolManagement))]
-    partial class LeaderSchoolManagementModelSnapshot : ModelSnapshot
+    [DbContext(typeof(FollowerSchoolManagement))]
+    partial class FollowerSchoolManagementModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

@@ -9,11 +9,11 @@ using Single_Leader_Replication.Configurations;
 
 #nullable disable
 
-namespace Single_Leader_Replication.Migrations.LeaderSchoolManagementMigrations
+namespace Single_Leader_Replication.Migrations.FollowerSchoolManagementMigrations
 {
-    [DbContext(typeof(LeaderSchoolManagement))]
-    [Migration("20231208000239_LeaderDatabaseMigration")]
-    partial class LeaderDatabaseMigration
+    [DbContext(typeof(FollowerSchoolManagement))]
+    [Migration("20231213172905_FollowerMigration")]
+    partial class FollowerMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

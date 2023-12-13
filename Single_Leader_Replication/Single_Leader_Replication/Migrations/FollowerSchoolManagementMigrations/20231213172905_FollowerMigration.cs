@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Single_Leader_Replication.Migrations
+namespace Single_Leader_Replication.Migrations.FollowerSchoolManagementMigrations
 {
     /// <inheritdoc />
-    public partial class FollowerDatabaseMigration : Migration
+    public partial class FollowerMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

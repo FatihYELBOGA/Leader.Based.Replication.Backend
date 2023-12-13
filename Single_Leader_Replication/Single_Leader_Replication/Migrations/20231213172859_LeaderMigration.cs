@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Single_Leader_Replication.Migrations.LeaderSchoolManagementMigrations
+namespace Single_Leader_Replication.Migrations
 {
     /// <inheritdoc />
-    public partial class LeaderDatabaseMigration : Migration
+    public partial class LeaderMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

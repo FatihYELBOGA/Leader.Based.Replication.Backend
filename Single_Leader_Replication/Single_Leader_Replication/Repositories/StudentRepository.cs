@@ -37,31 +37,45 @@ namespace Single_Leader_Replication.Repositories
 
         public Student AddStudent(Student newStudent)
         {
-            _leaderDatabase.Students.Add(newStudent);
-            _leaderDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+            using(var transaction = _leaderDatabase.Database.BeginTransaction())
             {
-                outputFile.WriteLine("INSERT INTO students VALUES ('" +
-                    newStudent.FirstName + "', '" +
-                    newStudent.LastName + "', '" +
-                    newStudent.BornDate + "', '" +
-                    newStudent.Gender + "', '" +
-                    newStudent.Phone + "', " +
-                    newStudent.DepartmentId + ")");
-            }
+                try
+                {
+                    int delay_start_time = DateTime.Now.Millisecond;
 
-            newStudent.Id = 0;
-            _followerDatabase.Students.Add(newStudent);
-            _followerDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
-            {
-                outputFile.WriteLine("INSERT INTO students VALUES ('" + 
-                    newStudent.FirstName + "', '" + 
-                    newStudent.LastName + "', '" + 
-                    newStudent.BornDate + "', '" + 
-                    newStudent.Gender + "', '" + 
-                    newStudent.Phone + "', " + 
-                    newStudent.DepartmentId + ")");
+                    _leaderDatabase.Students.Add(newStudent);
+                    _leaderDatabase.SaveChanges();
+
+                    string log = "INSERT INTO students VALUES ('" +
+                            newStudent.FirstName + "', '" +
+                            newStudent.LastName + "', '" +
+                            newStudent.BornDate + "', '" +
+                            newStudent.Gender + "', '" +
+                            newStudent.Phone + "', " +
+                            newStudent.DepartmentId + ")";
+
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    int delay_end_time = DateTime.Now.Millisecond;
+                    int delay_time = delay_end_time - delay_start_time;
+
+                    newStudent.Id = 0;
+                    _followerDatabase.Students.Add(newStudent);
+                    _followerDatabase.SaveChanges();
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+                }
             }
 
             return GetStudentById(newStudent.Id);
@@ -69,55 +83,77 @@ namespace Single_Leader_Replication.Repositories
 
         public Student UpdateStudent(Student currentStudent)
         {
-            Student updatedStudent = _leaderDatabase.Students.Update(currentStudent).Entity;
-            _leaderDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+            using (var transaction = _leaderDatabase.Database.BeginTransaction())
             {
-                outputFile.WriteLine("UPDATE students SET FirstName = '" + currentStudent.FirstName +
-                    "' , LastName = '" + currentStudent.LastName +
-                    "' , BornDate = '" + currentStudent.BornDate +
-                    "' , Gender = '" + currentStudent.Gender + 
-                    "' , Phone = '" + currentStudent.Phone + 
-                    "' , DepartmentId = " + currentStudent.DepartmentId + 
-                    " WHERE Id = " + currentStudent.Id);
-            }
+                try
+                {
+                    _leaderDatabase.Students.Update(currentStudent);
+                    _leaderDatabase.SaveChanges();
 
-            _followerDatabase.Students.Update(currentStudent);
-            _followerDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
-            {
-                outputFile.WriteLine("UPDATE students SET FirstName = '" + currentStudent.FirstName +
-                    "', LastName = '" + currentStudent.LastName +
-                    "', BornDate = '" + currentStudent.BornDate +
-                    "', Gender = '" + currentStudent.Gender +
-                    "', Phone = '" + currentStudent.Phone +
-                    "', DepartmentId = " + currentStudent.DepartmentId +
-                    " WHERE Id = " + currentStudent.Id);
-            }
+                    string log = "UPDATE students SET FirstName = '" + currentStudent.FirstName +
+                            "' , LastName = '" + currentStudent.LastName +
+                            "' , BornDate = '" + currentStudent.BornDate +
+                            "' , Gender = '" + currentStudent.Gender +
+                            "' , Phone = '" + currentStudent.Phone +
+                            "' , DepartmentId = " + currentStudent.DepartmentId +
+                            " WHERE Id = " + currentStudent.Id;
 
-            return GetStudentById(updatedStudent.Id);
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    _followerDatabase.Students.Update(currentStudent);
+                    _followerDatabase.SaveChanges();
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    transaction.Commit();
+
+                    return GetStudentById(currentStudent.Id);
+                }
+                catch(Exception ex) 
+                {
+                    transaction.Rollback();
+                    return null;
+                }
+            }
         }
 
         public Student UpdateGrade(StudentCourse currentStudentCourse)
         {
-            _leaderDatabase.StudentCourses.Update(currentStudentCourse);
-            _leaderDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+            using (var transaction = _leaderDatabase.Database.BeginTransaction())
             {
-                outputFile.WriteLine("UPDATE studentcourses SET Grade = '" + currentStudentCourse.Grade + 
-                    "', StudentId = " + currentStudentCourse.StudentId +
-                    "', CourseId = " + currentStudentCourse.CourseId +
-                    " WHERE Id = " + currentStudentCourse.Id);
-            }
+                try
+                {
+                    _leaderDatabase.StudentCourses.Update(currentStudentCourse);
+                    _leaderDatabase.SaveChanges();
 
-            _followerDatabase.StudentCourses.Update(currentStudentCourse);
-            _followerDatabase.SaveChanges();
-            using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
-            {
-                outputFile.WriteLine("UPDATE studentcourses SET Grade = '" + currentStudentCourse.Grade +
-                    "', StudentId = " + currentStudentCourse.StudentId +
-                    "', CourseId = " + currentStudentCourse.CourseId +
-                    " WHERE Id = " + currentStudentCourse.Id);
+                    string log = "UPDATE studentcourses SET Grade = '" + currentStudentCourse.Grade +
+                            "', StudentId = " + currentStudentCourse.StudentId +
+                            "', CourseId = " + currentStudentCourse.CourseId +
+                            " WHERE Id = " + currentStudentCourse.Id;
+
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\leader_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    _followerDatabase.StudentCourses.Update(currentStudentCourse);
+                    _followerDatabase.SaveChanges();
+                    using (StreamWriter outputFile = new StreamWriter("C:\\Users\\Fatih YELBOĞA\\Documents\\Logs\\follower_database_log.txt", true))
+                    {
+                        outputFile.WriteLine(log);
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
             }
 
             return GetStudentById((int) currentStudentCourse.StudentId);

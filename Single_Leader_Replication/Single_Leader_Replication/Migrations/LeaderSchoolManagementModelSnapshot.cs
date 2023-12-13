@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Single_Leader_Replication.Configurations;
 
@@ -11,12 +10,10 @@ using Single_Leader_Replication.Configurations;
 
 namespace Single_Leader_Replication.Migrations
 {
-    [DbContext(typeof(FollowerSchoolManagement))]
-    [Migration("20231208000011_FollowerDatabaseMigration")]
-    partial class FollowerDatabaseMigration
+    [DbContext(typeof(LeaderSchoolManagement))]
+    partial class LeaderSchoolManagementModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
