@@ -12,7 +12,7 @@ using Single_Leader_Replication.Configurations;
 namespace Single_Leader_Replication.Migrations.FollowerSchoolManagementMigrations
 {
     [DbContext(typeof(FollowerSchoolManagement))]
-    [Migration("20231213172905_FollowerMigration")]
+    [Migration("20231214105249_FollowerMigration")]
     partial class FollowerMigration
     {
         /// <inheritdoc />

@@ -12,7 +12,7 @@ using Single_Leader_Replication.Configurations;
 namespace Single_Leader_Replication.Migrations
 {
     [DbContext(typeof(LeaderSchoolManagement))]
-    [Migration("20231213172859_LeaderMigration")]
+    [Migration("20231214105241_LeaderMigration")]
     partial class LeaderMigration
     {
         /// <inheritdoc />
